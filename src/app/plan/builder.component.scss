@@ -1,0 +1,77 @@
+@import "../global.scss";
+
+.training-plan-container {
+  position: relative;
+  width: 100%;
+  margin-top: $margin-large;
+
+  .workouts-container {
+    @include widthMargin(27%, 16px);
+    position: absolute;
+    right: 0;
+    margin-left: $margin-large;
+  }
+
+  .weeks-container {
+    width: 70%;
+    position: absolute;
+    left: 0;
+    padding-bottom: $padding-large;
+
+    md-list {
+      padding: 0;
+    }
+
+    md-card {
+      margin-bottom: $margin-large;
+    }
+
+    .week {
+
+      :after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+
+      .week-row {
+
+        .workout-item {
+          cursor: pointer;
+        }
+
+        .day-title {
+          width: 100px;
+          float: left;
+        }
+
+        .day-workouts {
+          height: auto;
+          @include widthMargin(100%, 116px);
+          float: right;
+
+        }
+        margin-bottom: $margin-medium;
+
+        :after {
+          clear: both;
+        }
+      }
+    }
+
+    .buttons {
+      text-align: right;
+    }
+  }
+}
+
+.running {
+  background: $running-bg;
+}
+
+.cycling {
+  background: $cycling-bg;
+}
+
+
+

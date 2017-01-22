@@ -1,0 +1,223 @@
+<div class="workout-dialog-container">
+  <form (ngSubmit)="onSubmit()" #workoutForm="ngForm">
+    <div class="flex-container" fxLayout="row" fxLayoutAlign="start center">
+      <md-input placeholder="Workout Name" maxlength="100"
+                [(ngModel)]="workout.name"
+                name="name"
+                id="name"
+                class="workout-input flex-item"></md-input>
+
+
+      <md-select *ngIf="sports" placeholder="Sport" class="workout-input flex-item"
+                 id="workoutSport"
+                 name="workoutSport"
+                 [(ngModel)]="workout.sports[0]">
+        <md-option *ngFor="let sport of sports" [value]="sport">{{sport.name}}</md-option>
+      </md-select>
+
+      <md-select *ngIf="workoutTypes" placeholder="Workout Type"
+                 class="workout-input flex-item"
+                 id="workoutType"
+                 name="workoutType"
+                 [(ngModel)]="workout.type">
+        <md-option *ngFor="let type of workoutTypes" [value]="type">{{type.name}}</md-option>
+      </md-select>
+
+      <button md-raised-button (click)="addStep()" class="flex-item" type='button'>Add Step</button>
+      <button md-raised-button (click)="addRepeat()" class="flex-item" type='button'>Add Repeat</button>
+
+    </div>
+
+    <div *ngIf="workout.steps" class="workout-steps">
+      <div *ngFor="let step of workout.steps; let stepIndex = index;" class="workout-step step-{{step.type.color}}"
+           [ngClass]="{workout_repeat: step.isRepeat()}">
+        <!--Steps-->
+        <div *ngIf="!step.isRepeat()" class="flex-container" fxLayout="row" fxLayoutAlign="start center">
+          <md-icon class="drag-icon flex-item">drag_handle</md-icon>
+          <div class="flex-item flex-container" fxLayout="row" fxLayoutAlign="start center" fxFlex="">
+            <!--Step Type-->
+            <md-select *ngIf="stepTypes" class="workout-input flex-item"
+                       id="stepType{{stepIndex}}"
+                       name="stepType{{stepIndex}}"
+                       [(ngModel)]="step.type"
+                       mdTooltip="Step Type" mdTooltipPosition="below"
+                       >
+              <md-option *ngFor="let type of stepTypes" [value]="type">{{type.name}}</md-option>
+            </md-select>
+
+            <!--Duration Target-->
+            <button md-raised-button *ngIf="!step.duration"
+                    (click)="addDuration(step)" class="flex-item" type='button'>Add Duration</button>
+
+            <md-input-container align="start" *ngIf="step.duration" class="target-value flex-item target-item">
+              <input mdInput placeholder="amount"
+                     id="durationValue{{stepIndex}}"
+                     name="durationValue{{stepIndex}}"
+                     [(ngModel)]="step.duration.min">
+
+              <md-select mdPrefix *ngIf="durationTargetTypes"
+                         [style.height.px]="25"
+                         class="workout-input flex-item"
+                         id="durationType{{stepIndex}}"
+                         name="durationType{{stepIndex}}"
+                         [(ngModel)]="step.duration.type"
+                         aria-disabled="true"
+                         mdTooltip="Duration" mdTooltipPosition="below">
+                <md-option *ngFor="let type of durationTargetTypes" [value]="type">{{type.name}}</md-option>
+               </md-select>
+
+              <span mdSuffix> {{step.duration.type.unit.iso}}</span>
+            </md-input-container>
+
+            <!--Intensity Target-->
+            <button md-raised-button *ngIf="step.duration && !step.intensity"
+                    (click)="addIntensity(step)" class="flex-item" type='button'>Add Intensity</button>
+
+            <md-input-container *ngIf="step.intensity" class="flex-item target-value target-item"
+                                align="start">
+              <input mdInput placeholder="amount"
+                     id="intensityValue{{stepIndex}}"
+                     name="intensityValue{{stepIndex}}"
+                     [(ngModel)]="step.intensity.min"
+              >
+
+              <md-select mdPrefix *ngIf="intensityTargetTypes"
+                         class="workout-input flex-item"
+                         id="intensityType{{stepIndex}}"
+                         name="intensityType{{stepIndex}}"
+                         [(ngModel)]="step.intensity.type"
+                         aria-disabled="true"
+                         [style.height.px]="25"
+                         mdTooltip="Intensity" mdTooltipPosition="below">
+                <md-option *ngFor="let type of intensityTargetTypes" [value]="type">{{type.name}}</md-option>
+              </md-select>
+
+              <span mdSuffix> {{step.intensity.type.unit.iso}}</span>
+            </md-input-container>
+
+
+          </div>
+
+          <button md-button (click)="removeStep(stepIndex)" class="flex-item remove-step-button" fxFlex="48px" type='button'>
+            <md-icon class="remove-icon">clear</md-icon>
+          </button>
+        </div>
+
+        <!--Repeats-->
+        <div *ngIf="step.isRepeat()">
+
+          <div class="flex-container" fxLayout="row" fxLayoutAlign="start center">
+            <md-icon class="flex-item drag-icon">drag_handle</md-icon>
+            <md-icon class="flex-item repeat-icon" fxFlex="32px">repeat</md-icon>
+            <span class="flex-item">Repeat {{step.count}} Times</span>
+            <div class="flex-item" fxFlex="">
+              <button md-raised-button (click)="incrementCount(step)" fxFlexOffset="16px"
+                      type='button'
+                      class="flex-item count-button">
+                <md-icon class="count-icon">add</md-icon>
+              </button>
+              <button md-raised-button (click)="decrementCount(step)" class="flex-item count-button"
+                      type='button'
+                      [disabled]="step.count <= 2">
+                <md-icon class="count-icon">remove</md-icon>
+              </button>
+              <button md-raised-button (click)="addRepeatStep(step)" class="flex-item add-step-btn" type='button'>Add Step</button>
+            </div>
+            <button md-button (click)="removeStep(stepIndex)" class="flex-item remove-step-button" fxFlex="48px" type='button'>
+              <md-icon class="remove-icon">clear</md-icon>
+            </button>
+          </div>
+
+          <div *ngFor="let repeatStep of step.steps; let repeatStepIndex = index;"
+               class="repeat-step flex-container step-{{repeatStep.type.color}}"
+               fxLayout="row" fxLayoutAlign="start center">
+            <md-icon class="drag-icon flex-item">drag_handle</md-icon>
+
+            <div class="flex-item flex-container" fxFlex="" fxLayout="row" fxLayoutAlign="start center">
+              <!--Step Type-->
+              <md-select *ngIf="stepTypes" class="workout-input flex-item"
+                         [(ngModel)]="repeatStep.type"
+                         id="repeatStepType{{stepIndex}}_{{repeatStepIndex}}"
+                         name="repeatStepType{{stepIndex}}_{{repeatStepIndex}}"
+                         mdTooltip="Step Type" mdTooltipPosition="below">
+                <md-option *ngFor="let type of stepTypes" [value]="type">{{type.name}}</md-option>
+              </md-select>
+
+              <!--Duration Target-->
+              <button md-raised-button *ngIf="!repeatStep.duration"
+                      (click)="addDuration(repeatStep)" class="flex-item" type='button'>Add Duration</button>
+
+              <md-input-container *ngIf="repeatStep.duration"
+                                  class="flex-item target-item target-value"
+                                  align="start">
+                <input mdInput placeholder="amount"
+                       id="durationValue{{stepIndex}}_{{repeatStepIndex}}"
+                       name="durationValue{{stepIndex}}_{{repeatStepIndex}}"
+                       [(ngModel)]="repeatStep.duration.min">
+
+                <md-select mdPrefix *ngIf="durationTargetTypes"
+                           [style.height.px]="25"
+                           class="workout-input flex-item"
+                           id="durationType{{stepIndex}}_{{repeatStepIndex}}"
+                           name="durationType{{stepIndex}}_{{repeatStepIndex}}"
+                           [(ngModel)]="repeatStep.duration.type"
+                           aria-disabled="true"
+                           mdTooltip="Duration" mdTooltipPosition="below">
+                  <md-option *ngFor="let type of durationTargetTypes" [value]="type">{{type.name}}</md-option>
+                </md-select>
+
+                <span mdSuffix> {{repeatStep.duration.type.unit.iso}}</span>
+              </md-input-container>
+
+
+
+              <!--Intensity Target-->
+              <button md-raised-button *ngIf="repeatStep.duration && !repeatStep.intensity"
+                      (click)="addIntensity(repeatStep)" class="flex-item" type='button'>Add Intensity</button>
+
+              <md-input-container align="start"
+                                  class="flex-item target-item target-value"
+                                  *ngIf="repeatStep.intensity" >
+                <input mdInput placeholder="amount"
+                       id="intensityValue{{stepIndex}}_{{repeatStepIndex}}"
+                       name="intensityValue{{stepIndex}}_{{repeatStepIndex}}"
+                       [(ngModel)]="repeatStep.intensity.min"
+                >
+
+                <md-select mdPrefix *ngIf="intensityTargetTypes"
+                           class="workout-input flex-item"
+                           id="intensityType{{stepIndex}}_{{repeatStepIndex}}"
+                           name="intensityType{{stepIndex}}_{{repeatStepIndex}}"
+                           [(ngModel)]="repeatStep.intensity.type"
+                           aria-disabled="true"
+                           [style.height.px]="25"
+                           mdTooltip="Intensity" mdTooltipPosition="below">
+                  <md-option *ngFor="let type of intensityTargetTypes" [value]="type">{{type.name}}</md-option>
+                </md-select>
+
+                <span mdSuffix> {{repeatStep.intensity.type.unit.iso}}</span>
+              </md-input-container>
+
+
+
+            </div>
+            <button md-button (click)="removeRepeatStep(stepIndex, repeatStepIndex)"
+                    class="flex-item remove-step-button"
+                    fxFlex="48px"
+                    type='button'>
+              <md-icon class="remove-icon">clear</md-icon>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <section class="buttons flex-container" fxLayout="row" fxLayoutAlign="end center">
+      <button md-raised-button (click)="dialogRef.close(workout)" type="button">Save Workout</button>
+      <button md-raised-button color="warn" type="button" md-dialog-close>Cancel</button>
+    </section>
+  </form>
+</div>

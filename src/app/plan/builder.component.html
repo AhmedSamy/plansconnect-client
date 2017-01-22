@@ -1,0 +1,45 @@
+<div class="training-plan-container">
+  <div class="weeks-container">
+    <md-list *ngIf="weeks" class="weeks">
+      <md-card *ngFor="let week of weeks, let weekIndex = index;">
+        <md-card-title> Week {{week.index+1}}</md-card-title>
+        <div *ngIf="week.days" class="week">
+          <div *ngFor="let day of week.days; let dayIndex = index;" class="week-row">
+            <div>
+            <div class="day-title">{{day.name}}</div>
+            <div class="day-workouts">
+              <md-list *ngIf="day.workouts.length > 0">
+                <md-list-item *ngFor="let workout of day.workouts; let workoutIndex = index;" class="workout-item" [style.height]="'auto'"
+                              (click)="openWorkout(workout, dayIndex, weekIndex, workoutIndex)">
+                  <md-icon md-list-avatar class="workout-icon {{workout.icon}}" svgIcon="sports:{{workout.icon}}"></md-icon>
+                  <h4 md-line>{{workout.name}}</h4>
+                </md-list-item>
+              </md-list>
+              <button md-button color="primary" (click)="addWorkout(weekIndex, dayIndex)">Add</button>
+            </div>
+            </div>
+            <md-divider></md-divider>
+          </div>
+        </div>
+        <section class="buttons">
+          <button md-raised-button (click)="confirm('clear', week.index)">Clear Week</button>
+          <button md-raised-button color="warn" (click)="confirm('remove',week.index)">Remove Week</button>
+        </section>
+      </md-card>
+    </md-list>
+
+    <section class="buttons">
+      <button md-raised-button color="primary" (click)="addWeek()">Add Week</button>
+    </section>
+  </div>
+
+  <md-card class="workouts-container">
+    <md-card-title>My Workout Library</md-card-title>
+    <md-list *ngIf="userWorkouts" class="md-grid-list-text">
+      <md-list-item *ngFor="let workout of userWorkouts">
+        <md-icon md-list-avatar class="workout-icon {{workout.icon}}" svgIcon="sports:{{workout.icon}}"></md-icon>
+        <h4 md-line>{{workout.name}}</h4>
+      </md-list-item>
+    </md-list>
+  </md-card>
+</div>

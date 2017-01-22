@@ -1,0 +1,134 @@
+@import "../global.scss";
+
+.workout-dialog-container {
+
+  md-input, md-select, button {
+    margin-right: $margin-large;
+  }
+
+  ////md-input {
+  //  .md-input-wrapper {
+  //
+  //    .md-input-underline {
+  //      background-color: #f47830;
+  //      margin-top: 5px;
+  //    }
+  //
+  //  }
+  ////}
+
+  .workout-steps {
+
+    .workout-step, .repeat-step {
+      margin-top: $margin-medium;
+      margin-bottom: $margin-medium;
+
+      color: slategray;
+
+      md-select {
+        .md-select-value {
+          color: white;
+        }
+      }
+
+      .drag-icon {
+        padding: $padding-large;
+      }
+
+
+      .remove-step-button {
+        min-width: 48px;
+
+        .remove-icon {
+          color: slategray;
+        }
+      }
+
+    }
+
+    .repeat-step {
+      margin-right: $margin-medium;
+      margin-left: $margin-medium;
+
+
+      .count-icon {
+        color: slategray;
+      }
+
+      .drag-icon {
+        padding-left: $padding-medium;
+      }
+
+      .remove-step-button {
+        margin-right: $margin-medium;
+      }
+    }
+
+    .step-red {
+      border: 1px solid $red;
+      background-color: $red-50;
+    }
+
+    .step-blue {
+      background-color: $blue-50;
+      border: 1px solid $blue;
+    }
+
+    .step-green {
+      background-color: $light-green-50;
+      border: 1px solid $light-green;
+    }
+
+    .step-teal {
+      border: 1px solid $teal;
+      background-color: $teal-50;
+    }
+
+    .step-blue-grey {
+      border: 1px solid $blue-grey;
+      background-color: $blue-grey-50;
+    }
+
+
+
+    .workout_repeat {
+
+      .count-button {
+        min-width: 48px;
+      }
+
+      .add-step-btn {
+        color: slategray;;
+      }
+
+    }
+
+
+    .target-item {
+      margin-right: $margin-large;
+    }
+  }
+}
+
+.workout-input .md-select-trigger {
+  border-bottom: none;
+  height: 26px;
+}
+
+md-input {
+  .md-input-wrapper {
+    background-color: #f47830;
+  }
+}
+
+.md-input-underline {
+  margin-top: 5px;
+}
+
+.buttons {
+  button {
+    margin-right: 0;
+    margin-left: $margin-large;
+  }
+}
+
